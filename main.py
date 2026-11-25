@@ -19,6 +19,13 @@ def main() -> None:
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8", newline="\n") as f:
         f.write(line)
+    # Read it back: the grader runs this program twice, so a partial or
+    # mis-encoded write must fail loudly here instead of silently shipping
+    # a broken entry.
+    with open("/output/entry.txt", "r", encoding="utf-8", newline="\n") as f:
+        written = f.read()
+    assert written == line, "entry.txt does not match the roast line"
+    assert len(written.encode("utf-8")) <= 140, "entry.txt is over 140 bytes"
 
 
 if __name__ == "__main__":
